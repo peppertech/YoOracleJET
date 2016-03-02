@@ -10,7 +10,7 @@
                     <attr intvalue="300" name="position"/>
                     <attr bundlevalue="org.netbeans.modules.yooj.Bundle#Blank_displayName" name="displayName"/>
                     <attr name="iconBase" stringvalue="org/netbeans/modules/yooj/resources/yo.png"/>
-                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/YeomanWizardDescription.html"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/BlankJETWizardDescription.html"/>
                     <attr name="instantiatingIterator" newvalue="org.netbeans.modules.yooj.panel.YeomanWizardIterator"/>
                     <attr boolvalue="true" name="requireProject"/>
                     <attr name="type" stringvalue="blank"/>
@@ -20,7 +20,7 @@
                     <attr intvalue="310" name="position"/>
                     <attr bundlevalue="org.netbeans.modules.yooj.Bundle#Basic_displayName" name="displayName"/>
                     <attr name="iconBase" stringvalue="org/netbeans/modules/yooj/resources/yo.png"/>
-                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/YeomanWizardDescription.html"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/BasicJETWizardDescription.html"/>
                     <attr name="instantiatingIterator" newvalue="org.netbeans.modules.yooj.panel.YeomanWizardIterator"/>
                     <attr boolvalue="true" name="requireProject"/>
                     <attr name="type" stringvalue="basic"/>

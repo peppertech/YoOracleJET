@@ -7,6 +7,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
+import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.filesystems.FileUtil;
@@ -206,7 +207,8 @@ public class YeomanNameLocationPanelVisual extends JPanel implements DocumentLis
         String projectName = (String) settings.getProperty("name");
         if (projectName == null) {
 //            projectName = settings.getProperty("selectedGenerator").toString().replace(":", "-");
-            projectName = "BlankOracleJETApp";
+            String type = Templates.getTemplate(settings).getAttribute("type").toString();
+            projectName = type + "OracleJETApp";
         }
         this.projectNameTextField.setText(projectName);
         this.projectNameTextField.selectAll();
