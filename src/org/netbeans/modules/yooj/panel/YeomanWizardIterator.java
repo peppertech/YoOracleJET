@@ -38,6 +38,7 @@ import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.WizardDescriptor;
 import org.netbeans.api.templates.TemplateRegistration;
 import org.netbeans.modules.yooj.options.YeomanOptionsPanelController;
+import org.netbeans.spi.project.ui.templates.support.Templates;
 //import org.netbeans.modules.yo.template2.YeomanSettingsWizardPanel;
 //import org.netbeans.modules.yo.template2.YeomanSettingsWizardPanel;
 //import org.netbeans.modules.yo.wizard.YoConfigurationVisualPanel;
@@ -55,13 +56,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-@TemplateRegistration(
-        position = 300, 
-        folder = "Project/ClientSide", 
-        displayName = "#Yeoman_displayName", 
-        description = "../../yooj/resources/YeomanWizardDescription.html", 
-        iconBase = "org/netbeans/modules/yooj/resources/yo.png")
-@NbBundle.Messages("Yeoman_displayName=HTML5 Application from Yeoman")
+//@TemplateRegistration(
+//        position = 300,
+//        folder = "Project/ClientSide",
+//        displayName = "#Yeoman_displayName",
+//        description = "../../yooj/resources/YeomanWizardDescription.html",
+//        iconBase = "org/netbeans/modules/yooj/resources/yo.png")
+//@NbBundle.Messages("Yeoman_displayName=HTML5 Application from Yeoman")
 public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiatingIterator {
 
     private int index;
@@ -78,7 +79,6 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
 
     private WizardDescriptor.Panel[] createPanels() {
         return new WizardDescriptor.Panel[]{
-//            new YeomanSettingsWizardPanel(),
             new YeomanNameLocationWizardPanel()
         };
     }
@@ -92,22 +92,29 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
 
     @Override
     public Set instantiate(final ProgressHandle handle) throws IOException {
+        final String type = Templates.getTemplate(wiz).getAttribute("type").toString();
+        String message;
+        if (type.equals("basic")){
+            message = "Creating Basic Oracle JET application...";
+        } else {
+            message = "Creating Blank Oracle JET application...";
+        }
         ProgressUtils.showProgressDialogAndRun(new Runnable() {
             @Override
             public void run() {
                 try {
-                    createYoApp(handle);
+                    createYoApp(handle, type);
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
             }
-        }, "Creating Yeoman application...");
+        }, message);
         return Collections.emptySet();
     }
 
     private Process process;
 
-    private void createYoApp(final ProgressHandle handle) throws IOException {
+    private void createYoApp(final ProgressHandle handle, final String type) throws IOException {
         final File dirF = FileUtil.normalizeFile((File) wiz.getProperty("projdir"));
         final String projectName = (String) wiz.getProperty("name");
         dirF.mkdirs();
@@ -118,11 +125,20 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
                 @Override
                 public Process call() throws Exception {
                     String yo = NbPreferences.forModule(YeomanOptionsPanelController.class).get("yoExecutableLocation", "");
-                    process
-                            = new ExternalProcessBuilder(yo).
-                            addArgument("oraclejet").
-                            addArgument(projectName).
-                            workingDirectory(new File(dirF.getParent())).call();
+                    if (type.equals("basic")) {
+                        process
+                                = new ExternalProcessBuilder(yo).
+                                addArgument("oraclejet").
+                                addArgument(projectName).
+                                addArgument("--template=basic").
+                                workingDirectory(new File(dirF.getParent())).call();
+                    } else {
+                        process
+                                = new ExternalProcessBuilder(yo).
+                                addArgument("oraclejet").
+                                addArgument(projectName).
+                                workingDirectory(new File(dirF.getParent())).call();
+                    }
                     dialogProcessor.setWriter(new OutputStreamWriter(process.getOutputStream()));
                     return process;
                 }
@@ -168,49 +184,48 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
             handle.finish();
         }
         FileObject dir = FileUtil.toFileObject(dirF);
-        dir.refresh();
-        if (dir.getFileObject("pom.xml") == null) {
-            FileObject nbprojectFolder = dir.createFolder("nbproject");
-            FileObject projectXML = nbprojectFolder.createData("project", "xml");
-            writeTemplate(projectXML,projectName);
-//            FileObject projectProperties = nbprojectFolder.createData("project", "properties");
-            Project p = FileOwnerQuery.getOwner(dir);
-            OpenProjects.getDefault().open(new Project[]{p}, true, true);
-        } else {
-            Project p = FileOwnerQuery.getOwner(dir);
-            OpenProjects.getDefault().open(new Project[]{p}, true, true);
-        }
+//        dir.refresh();
+//        if (dir.getFileObject("pom.xml") == null) {
+//            FileObject nbprojectFolder = dir.createFolder("nbproject");
+//            FileObject projectXML = nbprojectFolder.createData("project", "xml");
+//            writeTemplate(projectXML,projectName);
+////            FileObject projectProperties = nbprojectFolder.createData("project", "properties");
+        Project p = FileOwnerQuery.getOwner(dir);
+        OpenProjects.getDefault().open(new Project[]{p}, true, true);
+//        } else {
+//            Project p = FileOwnerQuery.getOwner(dir);
+//            OpenProjects.getDefault().open(new Project[]{p}, true, true);
+//        }
     }
 
-    private void writeTemplate(FileObject obj, String name) {
-        FileLock fileLock = null;
-        OutputStreamWriter osw;
-        try {
-            fileLock = obj.lock();
-            OutputStream fout = obj.getOutputStream(fileLock);
-            OutputStream bout = new BufferedOutputStream(fout);
-            osw = new OutputStreamWriter(bout, "UTF-8");
-            osw.write(
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                    + "<project xmlns=\"http://www.netbeans.org/ns/project/1\">\n"
-                    + "    <type>org.netbeans.modules.web.clientproject</type>\n"
-                    + "    <configuration>\n"
-                    + "        <data xmlns=\"http://www.netbeans.org/ns/clientside-project/1\">\n"
-                    + "            <name>"+name+"</name>\n"
-                    + "        </data>\n"
-                    + "    </configuration>\n"
-                    + "</project>"
-            );
-            osw.flush();
-            osw.close();
-        } catch (IOException ex) {
-        } finally {
-            if (fileLock != null) {
-                fileLock.releaseLock();
-            }
-        }
-    }
-
+//    private void writeTemplate(FileObject obj, String name) {
+//        FileLock fileLock = null;
+//        OutputStreamWriter osw;
+//        try {
+//            fileLock = obj.lock();
+//            OutputStream fout = obj.getOutputStream(fileLock);
+//            OutputStream bout = new BufferedOutputStream(fout);
+//            osw = new OutputStreamWriter(bout, "UTF-8");
+//            osw.write(
+//                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//                    + "<project xmlns=\"http://www.netbeans.org/ns/project/1\">\n"
+//                    + "    <type>org.netbeans.modules.web.clientproject</type>\n"
+//                    + "    <configuration>\n"
+//                    + "        <data xmlns=\"http://www.netbeans.org/ns/clientside-project/1\">\n"
+//                    + "            <name>"+name+"</name>\n"
+//                    + "        </data>\n"
+//                    + "    </configuration>\n"
+//                    + "</project>"
+//            );
+//            osw.flush();
+//            osw.close();
+//        } catch (IOException ex) {
+//        } finally {
+//            if (fileLock != null) {
+//                fileLock.releaseLock();
+//            }
+//        }
+//    }
     @Override
     public Set instantiate() throws IOException {
         assert false : "Cannot call this method if implements WizardDescriptor.ProgressInstantiatingIterator.";
@@ -338,28 +353,27 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
     public final void removeChangeListener(ChangeListener l) {
     }
 
-    private static void unZipFile(InputStream source, FileObject projectRoot) throws IOException {
-        try {
-            ZipInputStream str = new ZipInputStream(source);
-            ZipEntry entry;
-            while ((entry = str.getNextEntry()) != null) {
-                if (entry.isDirectory()) {
-                    FileUtil.createFolder(projectRoot, entry.getName());
-                } else {
-                    FileObject fo = FileUtil.createData(projectRoot, entry.getName());
-                    if ("nbproject/project.xml".equals(entry.getName())) {
-                        // Special handling for setting name of Ant-based projects; customize as needed:
-                        filterProjectXML(fo, str, projectRoot.getName());
-                    } else {
-                        writeFile(str, fo);
-                    }
-                }
-            }
-        } finally {
-            source.close();
-        }
-    }
-
+//    private static void unZipFile(InputStream source, FileObject projectRoot) throws IOException {
+//        try {
+//            ZipInputStream str = new ZipInputStream(source);
+//            ZipEntry entry;
+//            while ((entry = str.getNextEntry()) != null) {
+//                if (entry.isDirectory()) {
+//                    FileUtil.createFolder(projectRoot, entry.getName());
+//                } else {
+//                    FileObject fo = FileUtil.createData(projectRoot, entry.getName());
+//                    if ("nbproject/project.xml".equals(entry.getName())) {
+//                        // Special handling for setting name of Ant-based projects; customize as needed:
+//                        filterProjectXML(fo, str, projectRoot.getName());
+//                    } else {
+//                        writeFile(str, fo);
+//                    }
+//                }
+//            }
+//        } finally {
+//            source.close();
+//        }
+//    }
     private static void writeFile(ZipInputStream str, FileObject fo) throws IOException {
         OutputStream out = fo.getOutputStream();
         try {
@@ -369,34 +383,33 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
         }
     }
 
-    private static void filterProjectXML(FileObject fo, ZipInputStream str, String name) throws IOException {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            FileUtil.copy(str, baos);
-            Document doc = XMLUtil.parse(new InputSource(new ByteArrayInputStream(baos.toByteArray())), false, false, null, null);
-            NodeList nl = doc.getDocumentElement().getElementsByTagName("name");
-            if (nl != null) {
-                for (int i = 0; i < nl.getLength(); i++) {
-                    Element el = (Element) nl.item(i);
-                    if (el.getParentNode() != null && "data".equals(el.getParentNode().getNodeName())) {
-                        NodeList nl2 = el.getChildNodes();
-                        if (nl2.getLength() > 0) {
-                            nl2.item(0).setNodeValue(name);
-                        }
-                        break;
-                    }
-                }
-            }
-            OutputStream out = fo.getOutputStream();
-            try {
-                XMLUtil.write(doc, out, "UTF-8");
-            } finally {
-                out.close();
-            }
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-            writeFile(str, fo);
-        }
-    }
-
+//    private static void filterProjectXML(FileObject fo, ZipInputStream str, String name) throws IOException {
+//        try {
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            FileUtil.copy(str, baos);
+//            Document doc = XMLUtil.parse(new InputSource(new ByteArrayInputStream(baos.toByteArray())), false, false, null, null);
+//            NodeList nl = doc.getDocumentElement().getElementsByTagName("name");
+//            if (nl != null) {
+//                for (int i = 0; i < nl.getLength(); i++) {
+//                    Element el = (Element) nl.item(i);
+//                    if (el.getParentNode() != null && "data".equals(el.getParentNode().getNodeName())) {
+//                        NodeList nl2 = el.getChildNodes();
+//                        if (nl2.getLength() > 0) {
+//                            nl2.item(0).setNodeValue(name);
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//            OutputStream out = fo.getOutputStream();
+//            try {
+//                XMLUtil.write(doc, out, "UTF-8");
+//            } finally {
+//                out.close();
+//            }
+//        } catch (Exception ex) {
+//            Exceptions.printStackTrace(ex);
+//            writeFile(str, fo);
+//        }
+//    }
 }

@@ -68,7 +68,7 @@ final class YeomanPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    @NbBundle.Messages("YeomanOptionsPanel.browse.title=Select Sass")
+    @NbBundle.Messages("YeomanOptionsPanel.browse.title=Select Yeoman")
     private void yoFolderBrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yoFolderBrowseButtonActionPerformed
         File file = new FileChooserBuilder(YeomanPanel.class)
                 .setFilesOnly(true)
