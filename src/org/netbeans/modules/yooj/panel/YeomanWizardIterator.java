@@ -3,28 +3,21 @@ package org.netbeans.modules.yooj.panel;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.Collections;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.zip.ZipInputStream;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
 import org.netbeans.api.extexecution.ExecutionDescriptor;
 import org.netbeans.api.extexecution.ExecutionService;
 import org.netbeans.api.extexecution.ExternalProcessBuilder;
-import org.netbeans.api.extexecution.input.InputProcessor;
-import org.netbeans.api.extexecution.input.InputProcessors;
 import org.netbeans.api.extexecution.input.LineProcessor;
-import org.netbeans.api.extexecution.print.ConvertedLine;
-import org.netbeans.api.extexecution.print.LineConvertor;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -147,24 +140,25 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
                             StatusDisplayer.getDefault().setStatusText("Created: " + dirF.getPath());
                         }
                     })
-                    .outConvertorFactory(new ExecutionDescriptor.LineConvertorFactory() {
-                        @Override
-                        public LineConvertor newLineConvertor() {
-                            return new Numbered();
-                        }
-                    })
-                    .outProcessorFactory(new ExecutionDescriptor.InputProcessorFactory() {
-                        @Override
-                        public InputProcessor newInputProcessor(InputProcessor defaultProcessor) {
-                            return InputProcessors.proxy(defaultProcessor, InputProcessors.bridge(new ProgressLineProcessor(process, handle, 100, 1)));
-                        }
-                    })
-                    .errProcessorFactory(new ExecutionDescriptor.InputProcessorFactory() {
-                        @Override
-                        public InputProcessor newInputProcessor(InputProcessor defaultProcessor) {
-                            return InputProcessors.proxy(defaultProcessor, InputProcessors.bridge(dialogProcessor));
-                        }
-                    });
+//                    .outConvertorFactory(new ExecutionDescriptor.LineConvertorFactory() {
+//                        @Override
+//                        public LineConvertor newLineConvertor() {
+//                            return new Numbered();
+//                        }
+//                    })
+//                    .outProcessorFactory(new ExecutionDescriptor.InputProcessorFactory() {
+//                        @Override
+//                        public InputProcessor newInputProcessor(InputProcessor defaultProcessor) {
+//                            return InputProcessors.proxy(defaultProcessor, InputProcessors.bridge(new ProgressLineProcessor(process, handle, 100, 1)));
+//                        }
+//                    })
+//                    .errProcessorFactory(new ExecutionDescriptor.InputProcessorFactory() {
+//                        @Override
+//                        public InputProcessor newInputProcessor(InputProcessor defaultProcessor) {
+//                            return InputProcessors.proxy(defaultProcessor, InputProcessors.bridge(dialogProcessor));
+//                        }
+//                    }
+                    ;
             ExecutionService service = ExecutionService.newService(callable, descriptor, "Yeoman");
             Future<Integer> future = service.run();
             try {
@@ -227,17 +221,17 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
         return null;
     }
 
-    private class Numbered implements LineConvertor {
-
-        private int number;
-
-        @Override
-        public List<ConvertedLine> convert(String line) {
-            List<ConvertedLine> result = Collections.singletonList(ConvertedLine.forText(number + ": " + line, null));
-            number++;
-            return result;
-        }
-    }
+//    private class Numbered implements LineConvertor {
+//
+//        private int number;
+//
+//        @Override
+//        public List<ConvertedLine> convert(String line) {
+//            List<ConvertedLine> result = Collections.singletonList(ConvertedLine.forText(number + ": " + line, null));
+//            number++;
+//            return result;
+//        }
+//    }
 
     private static class DialogLineProcessor implements LineProcessor {
 
@@ -369,14 +363,14 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
 //            source.close();
 //        }
 //    }
-    private static void writeFile(ZipInputStream str, FileObject fo) throws IOException {
-        OutputStream out = fo.getOutputStream();
-        try {
-            FileUtil.copy(str, out);
-        } finally {
-            out.close();
-        }
-    }
+//    private static void writeFile(ZipInputStream str, FileObject fo) throws IOException {
+//        OutputStream out = fo.getOutputStream();
+//        try {
+//            FileUtil.copy(str, out);
+//        } finally {
+//            out.close();
+//        }
+//    }
 
 //    private static void filterProjectXML(FileObject fo, ZipInputStream str, String name) throws IOException {
 //        try {
