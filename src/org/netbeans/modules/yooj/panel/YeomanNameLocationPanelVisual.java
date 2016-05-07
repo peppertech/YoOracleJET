@@ -208,7 +208,7 @@ public class YeomanNameLocationPanelVisual extends JPanel implements DocumentLis
         if (projectName == null) {
 //            projectName = settings.getProperty("selectedGenerator").toString().replace(":", "-");
             String type = Templates.getTemplate(settings).getAttribute("type").toString();
-            projectName = type + "OracleJETApp";
+            projectName = type + "HybridOracleJETApp";
         }
         this.projectNameTextField.setText(projectName);
         this.projectNameTextField.selectAll();

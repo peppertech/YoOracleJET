@@ -105,18 +105,33 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
                 @Override
                 public Process call() throws Exception {
                     String yo = NbPreferences.forModule(YeomanOptionsPanelController.class).get("yoExecutableLocation", "");
-                    if (type.equals("basic")) {
+                    //Format: oraclejet:hybrid app --appName='app' --template=navBar --platforms=android
+                    if (type.equals("blank")) {
                         process
                                 = new ExternalProcessBuilder(yo).
-                                addArgument("oraclejet").
+                                addArgument("oraclejet:hybrid").
                                 addArgument(projectName).
-                                addArgument("--template=basic").
+                                addArgument("--appName='"+projectName+"'").
+                                addArgument("--template=blank").
+                                addArgument("--platforms=android").
                                 workingDirectory(new File(dirF.getParent())).call();
-                    } else {
+                    } else if (type.equals("navBar")) {
                         process
                                 = new ExternalProcessBuilder(yo).
-                                addArgument("oraclejet").
+                                addArgument("oraclejet:hybrid").
                                 addArgument(projectName).
+                                addArgument("--appName='"+projectName+"'").
+                                addArgument("--template=navBar").
+                                addArgument("--platforms=android").
+                                workingDirectory(new File(dirF.getParent())).call();
+                    } else if (type.equals("navDrawer")) {
+                        process
+                                = new ExternalProcessBuilder(yo).
+                                addArgument("oraclejet:hybrid").
+                                addArgument(projectName).
+                                addArgument("--appName='"+projectName+"'").
+                                addArgument("--template=navDrawer").
+                                addArgument("--platforms=android").
                                 workingDirectory(new File(dirF.getParent())).call();
                     }
                     dialogProcessor.setWriter(new OutputStreamWriter(process.getOutputStream()));
