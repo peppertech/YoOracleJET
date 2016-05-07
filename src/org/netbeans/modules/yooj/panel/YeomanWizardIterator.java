@@ -22,7 +22,7 @@ import org.netbeans.api.extexecution.input.LineProcessor;
 import org.netbeans.api.extexecution.print.ConvertedLine;
 import org.netbeans.api.extexecution.print.LineConvertor;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressUtils;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -37,22 +37,11 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
-//@TemplateRegistration(
-//        position = 300,
-//        folder = "Project/ClientSide",
-//        displayName = "#Yeoman_displayName",
-//        description = "../../yooj/resources/YeomanWizardDescription.html",
-//        iconBase = "org/netbeans/modules/yooj/resources/yo.png")
-//@NbBundle.Messages("Yeoman_displayName=HTML5 Application from Yeoman")
-public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiatingIterator {
+public class YeomanWizardIterator implements WizardDescriptor.InstantiatingIterator {
 
     private int index;
     private WizardDescriptor.Panel[] panels;
     private WizardDescriptor wiz;
-    private static final String ENCODING = "UTF-8";
-
-    public YeomanWizardIterator() {
-    }
 
     public static YeomanWizardIterator createIterator() {
         return new YeomanWizardIterator();
@@ -72,19 +61,21 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
     }
 
     @Override
-    public Set instantiate(final ProgressHandle handle) throws IOException {
+    public Set instantiate() throws IOException {
         final String type = Templates.getTemplate(wiz).getAttribute("type").toString();
         String message = "Creating "+ type +" Oracle JET application...";
-        ProgressUtils.showProgressDialogAndRun(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    createYoApp(handle, type);
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-        }, message);
+        ProgressHandle ph = ProgressHandleFactory.createSystemHandle(message);
+        ph.start();
+//        ProgressUtils.showProgressDialogAndRun(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+                    createYoApp(ph, type);
+//                } catch (IOException ex) {
+//                    Exceptions.printStackTrace(ex);
+//                }
+//            }
+//        }, message);
         return Collections.emptySet();
     }
 
@@ -218,11 +209,7 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
 //            }
 //        }
 //    }
-    @Override
-    public Set instantiate() throws IOException {
-        assert false : "Cannot call this method if implements WizardDescriptor.ProgressInstantiatingIterator.";
-        return null;
-    }
+
 
     private class Numbered implements LineConvertor {
 
