@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -18,6 +19,8 @@ import org.netbeans.api.extexecution.ExecutionDescriptor;
 import org.netbeans.api.extexecution.ExecutionService;
 import org.netbeans.api.extexecution.ExternalProcessBuilder;
 import org.netbeans.api.extexecution.input.LineProcessor;
+import org.netbeans.api.extexecution.print.ConvertedLine;
+import org.netbeans.api.extexecution.print.LineConvertor;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -140,12 +143,12 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
                             StatusDisplayer.getDefault().setStatusText("Created: " + dirF.getPath());
                         }
                     })
-//                    .outConvertorFactory(new ExecutionDescriptor.LineConvertorFactory() {
-//                        @Override
-//                        public LineConvertor newLineConvertor() {
-//                            return new Numbered();
-//                        }
-//                    })
+                    .outConvertorFactory(new ExecutionDescriptor.LineConvertorFactory() {
+                        @Override
+                        public LineConvertor newLineConvertor() {
+                            return new Numbered();
+                        }
+                    })
 //                    .outProcessorFactory(new ExecutionDescriptor.InputProcessorFactory() {
 //                        @Override
 //                        public InputProcessor newInputProcessor(InputProcessor defaultProcessor) {
@@ -221,17 +224,17 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
         return null;
     }
 
-//    private class Numbered implements LineConvertor {
-//
-//        private int number;
-//
-//        @Override
-//        public List<ConvertedLine> convert(String line) {
-//            List<ConvertedLine> result = Collections.singletonList(ConvertedLine.forText(number + ": " + line, null));
-//            number++;
-//            return result;
-//        }
-//    }
+    private class Numbered implements LineConvertor {
+
+        private int number;
+
+        @Override
+        public List<ConvertedLine> convert(String line) {
+            List<ConvertedLine> result = Collections.singletonList(ConvertedLine.forText(number + ": " + line, null));
+            number++;
+            return result;
+        }
+    }
 
     private static class DialogLineProcessor implements LineProcessor {
 
