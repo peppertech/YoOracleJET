@@ -1,12 +1,8 @@
 package org.netbeans.modules.yooj.panel;
 
 import java.awt.Component;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -18,7 +14,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
@@ -35,26 +30,16 @@ import org.netbeans.api.progress.ProgressUtils;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.openide.WizardDescriptor;
-import org.netbeans.api.templates.TemplateRegistration;
 import org.netbeans.modules.yooj.options.YeomanOptionsPanelController;
 import org.netbeans.spi.project.ui.templates.support.Templates;
-//import org.netbeans.modules.yo.template2.YeomanSettingsWizardPanel;
-//import org.netbeans.modules.yo.template2.YeomanSettingsWizardPanel;
-//import org.netbeans.modules.yo.wizard.YoConfigurationVisualPanel;
+import org.openide.WizardDescriptor;
 import org.openide.awt.StatusDisplayer;
-import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.xml.XMLUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 //@TemplateRegistration(
 //        position = 300,
@@ -93,12 +78,7 @@ public class YeomanWizardIterator implements WizardDescriptor.ProgressInstantiat
     @Override
     public Set instantiate(final ProgressHandle handle) throws IOException {
         final String type = Templates.getTemplate(wiz).getAttribute("type").toString();
-        String message;
-        if (type.equals("basic")){
-            message = "Creating Basic Oracle JET application...";
-        } else {
-            message = "Creating Blank Oracle JET application...";
-        }
+        String message = "Creating "+ type +" Oracle JET application...";
         ProgressUtils.showProgressDialogAndRun(new Runnable() {
             @Override
             public void run() {

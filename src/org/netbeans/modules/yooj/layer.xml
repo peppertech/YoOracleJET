@@ -1,34 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
-    
+
     <folder name="Templates">
         <folder name="Project">
             <folder name="ClientSide">
                 <file name="org-netbeans-modules-yooj-BlankProject">
                     <attr boolvalue="true" name="template"/>
-                    <attr intvalue="300" name="position"/>
+                    <attr intvalue="800" name="position"/>
                     <attr bundlevalue="org.netbeans.modules.yooj.Bundle#Blank_displayName" name="displayName"/>
                     <attr name="iconBase" stringvalue="org/netbeans/modules/yooj/resources/yo.png"/>
                     <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/BlankJETWizardDescription.html"/>
                     <attr name="instantiatingIterator" newvalue="org.netbeans.modules.yooj.panel.YeomanWizardIterator"/>
                     <attr boolvalue="true" name="requireProject"/>
                     <attr name="type" stringvalue="blank"/>
-                    <attr name="cmd" stringvalue="oraclejet myapp"/>
+                    <attr name="cmd" stringvalue="oraclejet:hybrid app --appName='app' --template=blank --platforms=android"/>
                 </file>
-                <file name="org-netbeans-modules-yooj-BasicProject">
+                <file name="org-netbeans-modules-yooj-NavBarProject">
                     <attr boolvalue="true" name="template"/>
-                    <attr intvalue="310" name="position"/>
-                    <attr bundlevalue="org.netbeans.modules.yooj.Bundle#Basic_displayName" name="displayName"/>
+                    <attr intvalue="801" name="position"/>
+                    <attr bundlevalue="org.netbeans.modules.yooj.Bundle#NavBar_displayName" name="displayName"/>
                     <attr name="iconBase" stringvalue="org/netbeans/modules/yooj/resources/yo.png"/>
-                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/BasicJETWizardDescription.html"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/NavBarJETWizardDescription.html"/>
                     <attr name="instantiatingIterator" newvalue="org.netbeans.modules.yooj.panel.YeomanWizardIterator"/>
                     <attr boolvalue="true" name="requireProject"/>
-                    <attr name="type" stringvalue="basic"/>
-                    <attr name="cmd" stringvalue="oraclejet myapp --template=basic"/>
+                    <attr name="type" stringvalue="navBar"/>
+                    <attr name="cmd" stringvalue="oraclejet:hybrid app --appName='app' --template=navBar --platforms=android"/>
+                </file>
+                <file name="org-netbeans-modules-yooj-NavDrawerProject">
+                    <attr boolvalue="true" name="template"/>
+                    <attr intvalue="802" name="position"/>
+                    <attr bundlevalue="org.netbeans.modules.yooj.Bundle#NavDrawer_displayName" name="displayName"/>
+                    <attr name="iconBase" stringvalue="org/netbeans/modules/yooj/resources/yo.png"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/netbeans/modules/yooj/resources/NavDrawerJETWizardDescription.html"/>
+                    <attr name="instantiatingIterator" newvalue="org.netbeans.modules.yooj.panel.YeomanWizardIterator"/>
+                    <attr boolvalue="true" name="requireProject"/>
+                    <attr name="type" stringvalue="navDrawer"/>
+                    <attr name="cmd" stringvalue="oraclejet:hybrid app --appName='app' --template=navDrawer --platforms=android"/>
                 </file>
             </folder>
         </folder>
     </folder>
-    
+
 </filesystem>
