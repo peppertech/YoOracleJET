@@ -93,7 +93,7 @@ public class YeomanWizardIterator implements WizardDescriptor.InstantiatingItera
                 public Process call() throws Exception {
                     String yo = NbPreferences.forModule(YeomanOptionsPanelController.class).get("yoExecutableLocation", "");
                     //Format: oraclejet:hybrid app --appName='app' --template=navBar --platforms=android
-                    if (type.equals("blank")) {
+                    if (type.equals("blank-android")) {
                         process
                                 = new ExternalProcessBuilder(yo).
                                 addArgument("oraclejet:hybrid").
@@ -102,7 +102,16 @@ public class YeomanWizardIterator implements WizardDescriptor.InstantiatingItera
                                 addArgument("--template=blank").
                                 addArgument("--platforms=android").
                                 workingDirectory(new File(dirF.getParent())).call();
-                    } else if (type.equals("navBar")) {
+                    } else if (type.equals("blank-ios")) {
+                        process
+                                = new ExternalProcessBuilder(yo).
+                                addArgument("oraclejet:hybrid").
+                                addArgument(projectName).
+                                addArgument("--appName='"+projectName+"'").
+                                addArgument("--template=blank").
+                                addArgument("--platforms=ios").
+                                workingDirectory(new File(dirF.getParent())).call();
+                    } else if (type.equals("navBar-android")) {
                         process
                                 = new ExternalProcessBuilder(yo).
                                 addArgument("oraclejet:hybrid").
@@ -111,7 +120,16 @@ public class YeomanWizardIterator implements WizardDescriptor.InstantiatingItera
                                 addArgument("--template=navBar").
                                 addArgument("--platforms=android").
                                 workingDirectory(new File(dirF.getParent())).call();
-                    } else if (type.equals("navDrawer")) {
+                    } else if (type.equals("navBar-ios")) {
+                        process
+                                = new ExternalProcessBuilder(yo).
+                                addArgument("oraclejet:hybrid").
+                                addArgument(projectName).
+                                addArgument("--appName='"+projectName+"'").
+                                addArgument("--template=navBar").
+                                addArgument("--platforms=ios").
+                                workingDirectory(new File(dirF.getParent())).call();
+                    } else if (type.equals("navDrawer-android")) {
                         process
                                 = new ExternalProcessBuilder(yo).
                                 addArgument("oraclejet:hybrid").
@@ -119,6 +137,15 @@ public class YeomanWizardIterator implements WizardDescriptor.InstantiatingItera
                                 addArgument("--appName='"+projectName+"'").
                                 addArgument("--template=navDrawer").
                                 addArgument("--platforms=android").
+                                workingDirectory(new File(dirF.getParent())).call();
+                    } else if (type.equals("navDrawer-ios")) {
+                        process
+                                = new ExternalProcessBuilder(yo).
+                                addArgument("oraclejet:hybrid").
+                                addArgument(projectName).
+                                addArgument("--appName='"+projectName+"'").
+                                addArgument("--template=navDrawer").
+                                addArgument("--platforms=ios").
                                 workingDirectory(new File(dirF.getParent())).call();
                     }
                     dialogProcessor.setWriter(new OutputStreamWriter(process.getOutputStream()));
